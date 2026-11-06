@@ -1,0 +1,33 @@
+[app/ui]
+version = 10.6.1.1
+modtime = 1793947534.704439000
+
+[app/launcher]
+version = 10.6.1.1
+modtime = 1793947534.707691000
+
+[lookups/ua_regiones.csv]
+owner = admin
+version = 10.6.1.1
+modtime = 1793957716.806900000
+
+[transforms/ua_regiones]
+access = read : [ * ], write : [ admin ]
+export = system
+owner = admin
+version = 10.6.1.1
+modtime = 1793952193.645851000
+
+[lookups/geo_ua_regiones.kmz]
+access = read : [ * ], write : [ admin ]
+export = system
+owner = admin
+version = 10.6.1.1
+modtime = 1793956684.458552000
+
+[transforms/geo_ua_regiones]
+access = read : [ * ], write : [ admin ]
+export = system
+owner = admin
+version = 10.6.1.1
+modtime = 1793956773.746603000

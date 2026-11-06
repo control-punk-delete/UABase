@@ -1,0 +1,243 @@
+<dashboard version="2" theme="dark">
+    <label>Ua Cyber Resilience</label>
+    <description></description>
+    <definition><![CDATA[
+{
+	"visualizations": {
+		"viz_dIQenfti": {
+			"type": "splunk.table",
+			"options": {},
+			"dataSources": {
+				"primary": "ds_TyG56Xhm"
+			}
+		},
+		"viz_aorVvRD0": {
+			"type": "splunk.map",
+			"options": {
+				"center": [
+					48.5984366865238,
+					31.575630699842804
+				],
+				"zoom": 5.216745837737315,
+				"layers": [
+					{
+						"type": "marker",
+						"additionalTooltipFields": [
+							"admin_center_name"
+						],
+						"tooltipHeaderField": "> primary | seriesByName('count')",
+						"latitude": "> primary | seriesByName('admin_center_lat')",
+						"longitude": "> primary | seriesByName('admin_center_lon')"
+					}
+				]
+			},
+			"dataSources": {
+				"primary": "ds_TyG56Xhm"
+			}
+		},
+		"viz_ZYIVOu3Y": {
+			"type": "splunk.map",
+			"options": {
+				"center": [
+					48.959757185142735,
+					31.15966430740582
+				],
+				"zoom": 5.216745837737315,
+				"layers": [
+					{
+						"type": "choropleth",
+						"areaIds": "> primary | seriesByName('name')",
+						"areaValues": "> primary | seriesByName('admin_center_lat')",
+						"additionalTooltipFields": [
+							"iso_code"
+						],
+						"tooltipHeaderField": "> primary | seriesByName('name')"
+					}
+				]
+			},
+			"dataSources": {
+				"primary": "ds_asUOBfTt"
+			}
+		}
+	},
+	"dataSources": {
+		"ds_i9i3FW07": {
+			"type": "ds.search",
+			"options": {
+				"query": "| inputlookup ua_regiones"
+			},
+			"name": "ua_regiones"
+		},
+		"ds_TyG56Xhm": {
+			"type": "ds.chain",
+			"options": {
+				"extend": "ds_i9i3FW07",
+				"query": "| search iso_code IN ($token_regiones$)"
+			},
+			"name": "ua_selected_regiones"
+		},
+		"ds_asUOBfTt": {
+			"type": "ds.chain",
+			"options": {
+				"extend": "ds_TyG56Xhm",
+				"query": "| geom geo_ua_regiones featureIdField=iso_code gen=0.0001"
+			},
+			"name": "ua_selected_regiones_map"
+		}
+	},
+	"defaults": {
+		"dataSources": {
+			"ds.search": {
+				"options": {
+					"queryParameters": {
+						"latest": "$global_time.latest$",
+						"earliest": "$global_time.earliest$"
+					}
+				}
+			},
+			"ds.spl2": {
+				"options": {
+					"queryParameters": {
+						"latest": "$global_time.latest$",
+						"earliest": "$global_time.earliest$"
+					}
+				}
+			}
+		},
+		"visualizations": {
+			"global": {
+				"showProgressBar": true
+			}
+		}
+	},
+	"inputs": {
+		"input_global_trp": {
+			"type": "input.timerange",
+			"options": {
+				"token": "global_time",
+				"defaultValue": "-24h@h,now"
+			},
+			"title": "Global Time Range"
+		},
+		"input_gUIF82XK": {
+			"options": {
+				"items": ">frame(label, value) | prepend(formattedStatics) | objects()",
+				"defaultValue": [
+					"*"
+				],
+				"token": "token_regiones",
+				"isCascadingInput": true
+			},
+			"title": "Multiselect Input Title",
+			"type": "input.multiselect",
+			"dataSources": {
+				"primary": "ds_i9i3FW07"
+			},
+			"context": {
+				"formattedConfig": {
+					"number": {
+						"prefix": ""
+					}
+				},
+				"formattedStatics": ">statics | formatByType(formattedConfig)",
+				"statics": [
+					[
+						"All"
+					],
+					[
+						"*"
+					]
+				],
+				"label": ">primary | seriesByName(\"name\") | renameSeries(\"label\") | formatByType(formattedConfig)",
+				"value": ">primary | seriesByName(\"iso_code\") | renameSeries(\"value\") | formatByType(formattedConfig)"
+			}
+		}
+	},
+	"layout": {
+		"options": {},
+		"globalInputs": [
+			"input_global_trp"
+		],
+		"tabs": {
+			"items": [
+				{
+					"layoutId": "layout_1",
+					"label": "Points"
+				},
+				{
+					"layoutId": "layout_zWbZC3qC",
+					"label": "Geoms"
+				}
+			]
+		},
+		"layoutDefinitions": {
+			"layout_1": {
+				"type": "absolute",
+				"structure": [
+					{
+						"item": "input_gUIF82XK",
+						"type": "input",
+						"position": {
+							"x": 0,
+							"y": 0,
+							"w": 260,
+							"h": 82
+						}
+					},
+					{
+						"item": "viz_dIQenfti",
+						"type": "block",
+						"position": {
+							"x": 270,
+							"y": 10,
+							"w": 1150,
+							"h": 210
+						}
+					},
+					{
+						"item": "viz_aorVvRD0",
+						"type": "block",
+						"position": {
+							"x": 270,
+							"y": 230,
+							"w": 1150,
+							"h": 710
+						}
+					}
+				],
+				"options": {
+					"width": 1440,
+					"height": 960,
+					"display": "auto"
+				}
+			},
+			"layout_zWbZC3qC": {
+				"type": "absolute",
+				"structure": [
+					{
+						"item": "viz_ZYIVOu3Y",
+						"type": "block",
+						"position": {
+							"x": 240,
+							"y": 150,
+							"w": 1190,
+							"h": 740
+						}
+					}
+				],
+				"options": {
+					"width": 1440
+				}
+			}
+		}
+	},
+	"description": "",
+	"title": "Ua Cyber Resilience",
+	"applicationProperties": {
+		"hideViewModeActionMenu": true,
+		"hideExport": true,
+		"downsampleVisualizations": true
+	}
+}
+    ]]></definition>
+</dashboard>
